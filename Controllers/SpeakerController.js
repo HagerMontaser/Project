@@ -30,6 +30,10 @@ function checkValid(request){
 //Get all speakers method
 module.exports.GetAllSpeakers = (request,response,next)=>{
     //response.status(200).json({message :"speaker list"});
+    if(request.role !== "admin")
+    {
+        throw new Error("Not Authorized");
+    }
     
     Speaker.find({})
     .then((data)=>{
@@ -43,7 +47,11 @@ module.exports.GetAllSpeakers = (request,response,next)=>{
 //Get speaker by ID
 module.exports.GetSpeakerById = (request,response,next)=>{
     //response.status(200).json({message :"speaker by ID"});
-    
+    if(request.role !== "admin")
+    {
+        throw new Error("Not Authorized");
+    }
+
     checkValid(request);
     
     //find speaker when its id == id of request
@@ -89,26 +97,55 @@ module.exports.UpdateSpeaker = (request,response,next)=>{
     
     //Check data valid or not
     checkValid(request);
+    
+    console.log(request.role);
 
-    //update speaker by id
-    Speaker.updateOne({_id:request.body.id},{
-        $set:{
-            Email:request.body.email,
-            UserName:request.body.username,
-            Password:request.body.password,
-            City : request.body.city,
-            Street : request.body.street,
-            Building : request.body.building
-        }
-    })
-    .then(data => {
-        //if speaker is not found in database.
-        if(data.matchedCount == 0)
-            throw new Error("Speaker not exist");
-        
-        response.status(200).json({message:"Speaker updated",data});
-    })
-    .catch(error => next(error))
+    if(request.role === "speaker")
+    {
+        //update speaker by id
+        Speaker.updateOne({_id:request._id},{
+            $set:{
+                Email:request.body.email,
+                UserName:request.body.username,
+                Password:request.body.password,
+                City : request.body.city,
+                Street : request.body.street,
+                Building : request.body.building
+            }
+        })
+        .then(data => {
+            //if speaker is not found in database.
+            if(data.matchedCount == 0)
+                throw new Error("Speaker not exist");
+            
+            response.status(200).json({message:"Speaker updated",data});
+        })
+        .catch(error => next(error))
+    }
+    else if (request.role === "admin")
+    {
+             //update speaker by id
+             Speaker.updateOne({_id:request.body.id},{
+                $set:{
+                    Email:request.body.email,
+                    City : request.body.city,
+                    Street : request.body.street,
+                    Building : request.body.building
+                }
+            })
+            .then(data => {
+                //if speaker is not found in database.
+                if(data.matchedCount == 0)
+                    throw new Error("Speaker not exist");
+                
+                response.status(200).json({message:"Speaker updated",data});
+            })
+            .catch(error => next(error))
+    }
+    else
+    {
+        throw new Error("Not Authorized");
+    }
 }
 
 //Delete Speaker
@@ -118,13 +155,19 @@ module.exports.DeleteSpeaker = (request,response,next)=>{
     //Check data valid or not
     checkValid(request);
 
+    //check if user is an admin
+    if(request.role !== "admin")
+    {
+        throw new Error("Not Authorized");
+    }
     //delete speaker
     Speaker.findOneAndDelete({_id:request.body.id})
     .then(data => {
-        if (data)
-            response.status(200).json({message :"speaker deleted"});
-
-        throw new Error("Speaker not exist");
+        if (data==null)
+        {
+            throw new Error("Speaker not exist");
+        }
+        response.status(200).json({message :"speaker deleted"});
     })
     .catch(error=>next(error))
 }

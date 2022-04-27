@@ -4,6 +4,9 @@ const express = require("express");
 //require express-validator
 const {body,param,query} = require("express-validator");
 
+//require authentication middleware
+const authMW=require("./../MiddleWares/AuthenMiddleWare");
+
 //require SpeakerController
 const controller = require("./../Controllers/SpeakerController");
 
@@ -13,10 +16,13 @@ const Speaker = require("./../Models/SpeakerModel");
 //create router object
 const router = express.Router();
 
+//use authentication middleware
+// router.use(authMW);
 
 //route of speaker - httpMethods
 router.route("/speakers")
-.get(controller.GetAllSpeakers)
+
+.get(authMW,controller.GetAllSpeakers)
 .post(
     [
         body("email")
@@ -37,7 +43,7 @@ router.route("/speakers")
         body("building").not().isEmpty().withMessage("Building is empty")
 
     ],controller.CreateSpeaker)
-.put(
+.put(authMW,
     [
         body("id").isMongoId().withMessage("ID should be object id"),
         body("email")
@@ -62,13 +68,13 @@ router.route("/speakers")
         body("street").not().isEmpty().withMessage("Street is empty"),
         body("building").not().isEmpty().withMessage("Building is empty")
     ],controller.UpdateSpeaker)
-.delete(
+.delete(authMW,
     [
         body("id").isMongoId().withMessage("ID should be object id")
     ],controller.DeleteSpeaker)
 
 // validator.isMongoId(request.)
-router.get("/speakers/:id",
+router.get("/speakers/:id",authMW,
 [
     param("id").isMongoId().withMessage("ID should be object id")
 ]

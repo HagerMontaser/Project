@@ -4,6 +4,9 @@ const express = require("express");
 //require express-validator
 const {body,param,query} = require("express-validator");
 
+//require authentication middleware
+const authMW=require("./../MiddleWares/AuthenMiddleWare");
+
 //require StudentController
 const controller = require("./../Controllers/StudentController");
 
@@ -13,10 +16,12 @@ const Student = require("./../Models/StudentModel");
 //create router object
 const router = express.Router();
 
+//use authentication middleware
+// router.use(authMW);
 
 //route of student - httpMethods
 router.route("/students")
-.get(controller.GetAllStudents)
+.get(authMW,controller.GetAllStudents)
 .post(
     [
         body("id").isNumeric().withMessage("ID should be Numeric only")
@@ -41,7 +46,7 @@ router.route("/students")
         body("password").isAlphanumeric().withMessage("Password should be alphanumeric")
         
     ],controller.CreateStudent)
-.put(
+.put(authMW,
     [
         body("id").isNumeric().withMessage("ID should be Numeric only"),
         body("email")
@@ -62,14 +67,14 @@ router.route("/students")
         }),
         body("password").isAlphanumeric().withMessage("Password should be alphanumeric")
     ],controller.UpdateStudent)
-.delete(
+.delete(authMW,
     [
         body("id").isNumeric().withMessage("ID should be Numeric only")
         
     ],controller.DeleteStudent)
 
 
-router.get("/students/:id",
+router.get("/students/:id",authMW,
 [
     param("id").isNumeric().withMessage("ID should be Numeric only")
 ]

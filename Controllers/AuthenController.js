@@ -14,8 +14,8 @@ module.exports.login=(request,response,next)=>{
     {
         token = jwt.sign({
             _id:1,
-            Email:request.body.email,
-            Role:"admin"
+            email:request.body.email,
+            role:"admin"
         },"HagerMontaser5",{expiresIn:"24h"});
         response.status(200).json({msg:"login",token});
     }
@@ -35,8 +35,8 @@ module.exports.login=(request,response,next)=>{
                     }
                     token = jwt.sign({
                         _id:data._id,
-                        Email:data.email,
-                        Role:"speaker"
+                        email:data.Email,
+                        role:"speaker"
                     },"HagerMontaser5",{expiresIn:"24h"});
                 })
             }
@@ -44,8 +44,8 @@ module.exports.login=(request,response,next)=>{
             {
                 token = jwt.sign({
                     _id:data._id,
-                    Email:data.email,
-                    Role:"student"
+                    email:data.Email,
+                    role:"student"
                 },"HagerMontaser5",{expiresIn:"24h"});
             }
         response.status(200).json({msg:"login",token});

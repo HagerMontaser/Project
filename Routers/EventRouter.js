@@ -5,6 +5,9 @@ const express = require("express");
 const {body,param,query} = require("express-validator");
 const validator = require('validator');
 
+//require authentication middleware
+const authMW=require("./../MiddleWares/AuthenMiddleWare");
+
 //require EventController
 const controller = require("./../Controllers/EventController");
 
@@ -24,8 +27,8 @@ let StudentsIds = [];
 
 //route of Event - httpMethods
 router.route("/events")
-.get(controller.GetAllEvents)
-.post(
+.get(authMW,controller.GetAllEvents)
+.post(authMW,
     [
         body("id").isNumeric().withMessage("ID should be number")
         .custom((value,{req}) => {
@@ -122,7 +125,7 @@ router.route("/events")
         })
 
     ],controller.CreateEvent)
-.put(
+.put(authMW,
     [
         body("id").isNumeric().withMessage("ID should be number")
         .custom((value,{req}) => {
@@ -219,13 +222,13 @@ router.route("/events")
         })
 
     ],controller.UpdateEvent)
-.delete(
+.delete(authMW,
     [
         body("id").isNumeric().withMessage("ID should be number") 
     ],controller.DeleteEvent)
 
 
-router.get("/events/:id",
+router.get("/events/:id",authMW,
 [
     param("id").isNumeric().withMessage("ID should be number") 
 ]

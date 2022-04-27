@@ -27,6 +27,11 @@ function checkValid(request){
 //Get all students method
 module.exports.GetAllStudents = (request,response,next)=>{
     
+    if(request.role !== "admin")
+    {
+        throw new Error("Not Authorized");
+    }
+
     Student.find({})
     .then((data)=>{
         response.status(200).json({data});
@@ -39,6 +44,11 @@ module.exports.GetAllStudents = (request,response,next)=>{
 //Get student by ID
 module.exports.GetStudentById = (request,response,next)=>{
     
+    if(request.role !== "admin")
+    {
+        throw new Error("Not Authorized");
+    }
+
     checkValid(request);
     
     //find student when its id == id of request
@@ -79,21 +89,47 @@ module.exports.UpdateStudent = (request,response,next)=>{
     //Check data valid or not
     checkValid(request);
 
-    //update student by id
-    Student.updateOne({_id:request.body.id},{
-        $set:{
-            Email:request.body.email,
-            Password:request.body.password
-        }
-    })
-    .then(data => {
-        //if student is not found in database.
-        if(data.matchedCount == 0)
-            throw new Error("Student not exist");
-        
-        response.status(200).json({message:"Student updated",data});
-    })
-    .catch(error => next(error))
+    //check if role is an admin
+    if(request.role === "admin")
+    {
+        //update student by id
+        Student.updateOne({_id:request.body.id},{
+            $set:{
+                Email:request.body.email
+            }
+        })
+        .then(data => {
+            //if student is not found in database.
+            if(data.matchedCount == 0)
+                throw new Error("Student not exist");
+            
+            response.status(200).json({message:"Student updated",data});
+        })
+        .catch(error => next(error))
+    }
+    //check if role is a student
+    else if(request.role === "student")
+    {
+        //update student by id
+        Student.updateOne({_id:request._id},{
+            $set:{
+                Email:request.body.email,
+                Password:request.body.password
+            }
+        })
+        .then(data => {
+            //if student is not found in database.
+            if(data.matchedCount == 0)
+                throw new Error("Student not exist");
+            
+            response.status(200).json({message:"Student updated",data});
+        })
+        .catch(error => next(error))
+    }
+    else
+    {
+        throw new Error("Not Authorized");
+    }
 }
 
 //Delete Student
@@ -101,14 +137,21 @@ module.exports.DeleteStudent = (request,response,next)=>{
 
     //Check data valid or not
     checkValid(request);
-
+    
+    //check if user is an admin
+    if(request.role !== "admin")
+    {
+        throw new Error("Not Authorized");
+    }
     //delete student
     Student.findOneAndDelete({_id:request.body.id})
     .then(data => {
-        if (data)
-            response.status(200).json({message :"student deleted"});
+        if (data ==null)
+        {
+            throw new Error("Student not exist");
+        }
+        response.status(200).json({message :"student deleted"});
 
-        throw new Error("Student not exist");
     })
     .catch(error=>next(error))
 }
