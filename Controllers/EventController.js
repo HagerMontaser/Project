@@ -3,6 +3,9 @@ const {validationResult}=require("express-validator");
 
 //require Event model
 const event = require("../Models/EventModel");
+const student = require("../Models/StudentModel");
+const speaker = require("../Models/SpeakerModel");
+
 
 
 //Method --> Check data is valid or not
@@ -25,39 +28,84 @@ function checkValid(request){
 
 
 //Get all events method
-module.exports.GetAllEvents = (request,response,next)=>{
-    //check if user is an admin
-    if(request.role !== "admin")
+module.exports.GetAllEvents = async(request,response,next)=>{
+   
+    if(request.role === "admin")
+    {
+        checkValid(request);
+        
+        event.find({})
+        .then((data)=>{
+            response.status(200).json({data});
+        })
+        .catch((error) => {
+            next(error);
+        })
+ 
+    }
+    else if(request.role === "student")
+    {
+        event.find({Students:request._id})
+        .then((data)=>{
+            response.status(200).json({data});
+        })
+        .catch((error) => {
+            next(error);
+        })
+    }
+    else if(request.role === "speaker")
+    {
+        event.find({OtherSpeakers:request._id})
+        .then((data)=>{
+            if(data.length)
+            {
+                response.status(200).json({data});
+            }
+            else
+            {
+                event.find({MainSpeakerId:request._id})
+                .then(data=>{
+                    response.status(200).json({data});
+                })
+            }
+        }).catch((error) => {next(error);})
+    }
+    else
     {
         throw new Error("Not Authorized");
     }
-    event.find({})
-    .then((data)=>{
-        response.status(200).json({data});
-    })
-    .catch((error) => {
-        next(error);
-    })
 }
 
 //Get Event by ID
 module.exports.GetEventById = (request,response,next)=>{
     //check if user is an admin
-    if(request.role !== "admin")
+    if(request.role === "admin")
+    {
+        checkValid(request);
+    
+        //find Event when its id == id of request
+        event.find({_id:request.params.id})
+        .then((data)=>{
+            //send json data of choosen Event to front ent
+            response.status(200).json({data});
+        })
+        .catch(error => {
+            next(error);
+        })
+    }
+    else if(request.role === "student")
+    {
+
+    }
+    else if(request.role === "speaker")
+    {
+
+    }
+    else
     {
         throw new Error("Not Authorized");
     }
-    checkValid(request);
     
-    //find Event when its id == id of request
-    event.find({_id:request.params.id})
-    .then((data)=>{
-        //send json data of choosen Event to front ent
-        response.status(200).json({data});
-    })
-    .catch(error => {
-        next(error);
-    })
 }
 
 //create Event
