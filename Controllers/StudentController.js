@@ -63,25 +63,25 @@ module.exports.GetStudentById = (request,response,next)=>{
 }
 
 //create student
-module.exports.CreateStudent = (request,response,next)=>{
+// module.exports.CreateStudent = (request,response,next)=>{
     
-    //Check data valid or not
-    checkValid(request);
+//     //Check data valid or not
+//     checkValid(request);
 
-    //if data is valid create new student in database
-    let student = new Student({
-        _id: request.body.id,
-        Email:request.body.email,
-        Password:request.body.password
-    });
+//     //if data is valid create new student in database
+//     let student = new Student({
+//         _id: request.body.id,
+//         Email:request.body.email,
+//         Password:request.body.password
+//     });
 
-    //save in database
-    student.save()
-    .then((data)=>{
-        response.status(201).json({message:"Student created",data})
-    })
-    .catch(error=>next(error))
-}
+//     //save in database
+//     student.save()
+//     .then((data)=>{
+//         response.status(201).json({message:"Student created",data})
+//     })
+//     .catch(error=>next(error))
+// }
 
 //Update Student
 module.exports.UpdateStudent = (request,response,next)=>{

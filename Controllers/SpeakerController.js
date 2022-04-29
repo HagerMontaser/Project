@@ -65,31 +65,31 @@ module.exports.GetSpeakerById = (request,response,next)=>{
     })
 }
 
-//create speaker
-module.exports.CreateSpeaker = (request,response,next)=>{
-    //response.status(201).json({message :"speaker created"});
+// //create speaker
+// module.exports.CreateSpeaker = (request,response,next)=>{
+//     //response.status(201).json({message :"speaker created"});
     
-    //Check data valid or not
-    checkValid(request);
+//     //Check data valid or not
+//     checkValid(request);
 
-    //if data is valid create new speaker in database
-    let speaker = new Speaker({
-        _id: mongoose.Types.ObjectId(),
-        Email:request.body.email,
-        UserName:request.body.username,
-        Password:request.body.password,
-        City : request.body.city,
-        Street : request.body.street,
-        Building : request.body.building
-    });
+//     //if data is valid create new speaker in database
+//     let speaker = new Speaker({
+//         _id: mongoose.Types.ObjectId(),
+//         Email:request.body.email,
+//         UserName:request.body.username,
+//         Password:request.body.password,
+//         City : request.body.city,
+//         Street : request.body.street,
+//         Building : request.body.building
+//     });
 
-    //save in database
-    speaker.save()
-    .then((data)=>{
-        response.status(201).json({message:"Speaker created",data})
-    })
-    .catch(error=>next(error))
-}
+//     //save in database
+//     speaker.save()
+//     .then((data)=>{
+//         response.status(201).json({message:"Speaker created",data})
+//     })
+//     .catch(error=>next(error))
+// }
 
 //Update Speaker
 module.exports.UpdateSpeaker = (request,response,next)=>{
