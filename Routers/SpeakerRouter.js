@@ -23,39 +23,19 @@ const router = express.Router();
 router.route("/speakers")
 
 .get(authMW,controller.GetAllSpeakers)
-// .post(
-//     [
-//         body("email")
-//         // Checking if follow the email
-//         .isEmail().withMessage("Email incorrect")
-//         // Custom validation,Validate email in use or not
-//         .custom((value,{req}) => {
-//             return Speaker.findOne({ Email : req.body.email })
-//             .then((data)=>{
-//                 if(data)
-//                     throw new Error("Email already in use");
-//             })
-//         }),
-//         body("username").isAlpha().withMessage("UserName should be alphapetic characters only"),
-//         body("password").isAlphanumeric().withMessage("Password should be alphanumeric"),
-//         body("city").not().isEmpty().withMessage("City is empty"),
-//         body("street").not().isEmpty().withMessage("Street is empty"),
-//         body("building").not().isEmpty().withMessage("Building is empty")
-
-//     ],controller.CreateSpeaker)
 .put(authMW,
     [
-        body("id").isMongoId().withMessage("ID should be object id"),
+        body("_id").isMongoId().withMessage("ID should be object id"),
         body("email")
         // Checking if follow the email
         .isEmail().withMessage("Email incorrect")
         // Custom validation,Validate email in use or not
         .custom((value,{req}) => {
-            return Speaker.findOne({ Email : req.body.email })
+            return Speaker.findOne({ email : req.body.email })
             .then((data)=>{
                 if(data)
                 {
-                    if(data._id.toString() !==req.body.id.toString())
+                    if(data._id.toString() !==req.body._id.toString())
                     {
                         throw new Error("Email already in use");  
                     }
@@ -63,20 +43,21 @@ router.route("/speakers")
             })
         }),
         body("username").isAlpha().withMessage("UserName should be alphapetic characters only"),
-        body("password").isAlphanumeric().withMessage("Password should be alphanumeric"),
+        body("password").isString().withMessage("Password should be alphanumeric"),
         body("city").not().isEmpty().withMessage("City is empty"),
         body("street").not().isEmpty().withMessage("Street is empty"),
         body("building").not().isEmpty().withMessage("Building is empty")
     ],controller.UpdateSpeaker)
-.delete(authMW,
+
+router.delete("/speakers/:_id",authMW,
     [
-        body("id").isMongoId().withMessage("ID should be object id")
+        param("_id").isMongoId().withMessage("ID should be object id")
     ],controller.DeleteSpeaker)
 
 // validator.isMongoId(request.)
-router.get("/speakers/:id",authMW,
+router.get("/speakers/:_id",authMW,
 [
-    param("id").isMongoId().withMessage("ID should be object id")
+    param("_id").isMongoId().withMessage("ID should be object id")
 ]
 ,controller.GetSpeakerById);
 

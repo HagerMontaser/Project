@@ -1,0 +1,19 @@
+<div class="alert alert-secondary fs-5 d-flex justify-content-center">Edit Event</div>
+<a class="btn btn-primary col-2" (click)="back()">Back</a>
+
+<form class="border ">
+    <div class="mb-3 col-5 offset-3">
+        <label for="ID" class="form-label alert alert-success col-12">ID : {{student._id}}</label>
+    </div>
+    <div class="mb-3 col-5 offset-3">
+      <label for="title" class="form-label">Email</label>
+      <input [(ngModel)]="student.email"  [ngModelOptions]="{standalone: true}" type="text" class="form-control" id="title">
+    </div>
+   
+    <div class="mb-3 col-5 offset-3">
+        <span class="text-danger">{{span}}</span>
+    </div>
+    <button (click)="edit()" class="btn btn-secondary mb-5 col-5 offset-3">Edit</button>
+
+</form>
+

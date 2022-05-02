@@ -6,8 +6,8 @@ const mongoose = require("mongoose");
 //Create Schema 
 let StudentSchema = new mongoose.Schema({
     _id : Number,
-    Email : {type: String},
-    Password : {type : String}
+    email : {type: String},
+    password : {type : String}
 });
 
 

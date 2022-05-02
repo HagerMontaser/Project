@@ -37,7 +37,7 @@ module.exports.GetAllSpeakers = (request,response,next)=>{
     
     Speaker.find({})
     .then((data)=>{
-        response.status(200).json({data});
+        response.status(200).json(data);
     })
     .catch((error) => {
         next(error);
@@ -55,41 +55,15 @@ module.exports.GetSpeakerById = (request,response,next)=>{
     checkValid(request);
     
     //find speaker when its id == id of request
-    Speaker.find({_id:request.params.id})
+    Speaker.findOne({_id:request.params._id})
     .then((data)=>{
         //send json data of choosen speaker to front ent
-        response.status(200).json({data});
+        response.status(200).json(data);
     })
     .catch(error => {
         next(error);
     })
 }
-
-// //create speaker
-// module.exports.CreateSpeaker = (request,response,next)=>{
-//     //response.status(201).json({message :"speaker created"});
-    
-//     //Check data valid or not
-//     checkValid(request);
-
-//     //if data is valid create new speaker in database
-//     let speaker = new Speaker({
-//         _id: mongoose.Types.ObjectId(),
-//         Email:request.body.email,
-//         UserName:request.body.username,
-//         Password:request.body.password,
-//         City : request.body.city,
-//         Street : request.body.street,
-//         Building : request.body.building
-//     });
-
-//     //save in database
-//     speaker.save()
-//     .then((data)=>{
-//         response.status(201).json({message:"Speaker created",data})
-//     })
-//     .catch(error=>next(error))
-// }
 
 //Update Speaker
 module.exports.UpdateSpeaker = (request,response,next)=>{
@@ -98,19 +72,18 @@ module.exports.UpdateSpeaker = (request,response,next)=>{
     //Check data valid or not
     checkValid(request);
     
-    console.log(request.role);
 
     if(request.role === "speaker")
     {
         //update speaker by id
         Speaker.updateOne({_id:request._id},{
             $set:{
-                Email:request.body.email,
-                UserName:request.body.username,
-                Password:request.body.password,
-                City : request.body.city,
-                Street : request.body.street,
-                Building : request.body.building
+                email:request.body.email,
+                username:request.body.username,
+                password:request.body.password,
+                city : request.body.city,
+                street : request.body.street,
+                building : request.body.building
             }
         })
         .then(data => {
@@ -118,19 +91,19 @@ module.exports.UpdateSpeaker = (request,response,next)=>{
             if(data.matchedCount == 0)
                 throw new Error("Speaker not exist");
             
-            response.status(200).json({message:"Speaker updated",data});
+            response.status(200).json({msg:"Speaker updated"});
         })
         .catch(error => next(error))
     }
     else if (request.role === "admin")
     {
              //update speaker by id
-             Speaker.updateOne({_id:request.body.id},{
+             Speaker.updateOne({_id:request.body._id},{
                 $set:{
-                    Email:request.body.email,
-                    City : request.body.city,
-                    Street : request.body.street,
-                    Building : request.body.building
+                    email:request.body.email,
+                    city : request.body.city,
+                    street : request.body.street,
+                    building : request.body.building
                 }
             })
             .then(data => {
@@ -138,7 +111,7 @@ module.exports.UpdateSpeaker = (request,response,next)=>{
                 if(data.matchedCount == 0)
                     throw new Error("Speaker not exist");
                 
-                response.status(200).json({message:"Speaker updated",data});
+                response.status(200).json({msg:"Speaker updated"});
             })
             .catch(error => next(error))
     }
@@ -161,13 +134,13 @@ module.exports.DeleteSpeaker = (request,response,next)=>{
         throw new Error("Not Authorized");
     }
     //delete speaker
-    Speaker.findOneAndDelete({_id:request.body.id})
+    Speaker.findOneAndDelete({_id:request.params._id})
     .then(data => {
         if (data==null)
         {
             throw new Error("Speaker not exist");
         }
-        response.status(200).json({message :"speaker deleted"});
+        response.status(200).json({msg :"speaker deleted"});
     })
     .catch(error=>next(error))
 }

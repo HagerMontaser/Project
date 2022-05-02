@@ -1,0 +1,19 @@
+<div class="alert alert-secondary fs-5 d-flex justify-content-center">Details of Event</div>
+<a class="btn btn-primary col-2" (click)="back()">Back</a>
+
+<div class="mb-3 col-5 offset-3">
+    <label for="ID" class="form-label alert alert-success col-12">
+        <u>ID :</u>  {{event._id}} <br>
+        <u>Title :</u>  {{event.Title}} <br>
+        <u>Event Date :</u> {{event.EventDate}} <br>
+        <u>Main Speaker :</u>  {{mainspeaker.username}} <br>
+        <u>Other Speakers :</u> 
+        <tr *ngFor="let speaker of otherspeakers">
+            <td >{{speaker.username}} </td>
+        </tr> <br>
+        <u>Students :</u> 
+        <tr *ngFor="let student of students">
+            <td >{{student.email}} </td>
+        </tr>
+    </label>
+</div>

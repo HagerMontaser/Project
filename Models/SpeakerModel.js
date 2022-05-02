@@ -5,12 +5,12 @@ const mongoose = require("mongoose");
 //Create Schema 
 let SpeakerSchema = new mongoose.Schema({
     _id : mongoose.Types.ObjectId,
-    Email : {type: String},
-    UserName : {type:String},
-    Password : {type : String},
-    City : {type:String },
-    Street : {type:String},
-    Building :{type:String}
+    email : {type: String},
+    username : {type:String},
+    password : {type : String},
+    city : {type:String },
+    street : {type:String},
+    building :{type:String}
 });
 
 //register schema with collection

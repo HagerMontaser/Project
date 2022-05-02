@@ -30,21 +30,21 @@ router.route("/events")
 .get(authMW,controller.GetAllEvents)
 .post(authMW,
     [
-        body("id").isNumeric().withMessage("ID should be number")
+        body("_id").isNumeric().withMessage("ID should be number")
         .custom((value,{req}) => {
-            return Event.findOne({ _id : req.body.id })
+            return Event.findOne({ _id : req.body._id })
             .then((data)=>{
                 if(data)
                     throw new Error("ID already in use");
             })
         }),
-        body("title").isString().withMessage("Title should be string")
+        body("Title").isString().withMessage("Title should be string")
         .not().isEmpty().withMessage("Title is empty"),
-        body("mainspeakerid").isMongoId().withMessage("Main speaker Id should be object id")
+        body("MainSpeakerId").isMongoId().withMessage("Main speaker Id should be object id")
         .custom((value,{req}) => {
-            if(validator.isMongoId(req.body.mainspeakerid))
+            if(validator.isMongoId(req.body.MainSpeakerId))
             {
-                return Speaker.findOne({ _id : req.body.mainspeakerid })
+                return Speaker.findOne({ _id : req.body.MainSpeakerId })
                 .then((data)=>{
                     if(data==null)
                     {
@@ -56,15 +56,15 @@ router.route("/events")
                 throw new Error(" ");
             }
         }),
-        body("otherspeakers").isArray().withMessage("Other speaker should be array ")
+        body("OtherSpeakers").isArray().withMessage("Other speaker should be array ")
         .custom(async (value,{req}) => {
 
-            if(!(new Set(req.body.otherspeakers).size != req.body.otherspeakers.length)) //check that there is not duplicated date in array
+            if(!(new Set(req.body.OtherSpeakers).size != req.body.OtherSpeakers.length)) //check that there is not duplicated date in array
             {
-                for(var speakerid of req.body.otherspeakers)
+                for(var speakerid of req.body.OtherSpeakers)
                 {
                     //check if speaker id is object id and not equal main speaker id
-                    if(validator.isMongoId(speakerid) && (speakerid!==req.body.mainspeakerid))
+                    if(validator.isMongoId(speakerid) && (speakerid!==req.body.MainSpeakerId))
                     {
                         await Speaker.findOne({ _id : speakerid })
                         .then((data)=>{
@@ -89,13 +89,13 @@ router.route("/events")
                 throw new Error("There is duplicated speaker");
             }
         }),
-        body("otherspeakers.*").isMongoId().withMessage("Other Speakers Ids should be object IDs"),
-        body("students").isArray().withMessage("students should be array ")
+        body("OtherSpeakers.*").isMongoId().withMessage("Other Speakers Ids should be object IDs"),
+        body("Students").isArray().withMessage("students should be array ")
         .custom(async (value,{req}) => {
 
-            if(!(new Set(req.body.students).size != req.body.students.length)) //check that there is not duplicated date in array
+            if(!(new Set(req.body.Students).size != req.body.Students.length)) //check that there is not duplicated date in array
             {
-                for(var studentid of req.body.students)
+                for(var studentid of req.body.Students)
                 {
                     //check if student id is object id 
                     if(!isNaN(studentid))
@@ -127,21 +127,21 @@ router.route("/events")
     ],controller.CreateEvent)
 .put(authMW,
     [
-        body("id").isNumeric().withMessage("ID should be number")
+        body("_id").isNumeric().withMessage("ID should be number")
         .custom((value,{req}) => {
-            return Event.findOne({ _id : req.body.id })
+            return Event.findOne({ _id : req.body._id })
             .then((data)=>{
                 if(!data)
                     throw new Error("Event ID not found");
             })
         }),
-        body("title").isString().withMessage("Title should be string")
+        body("Title").isString().withMessage("Title should be string")
         .not().isEmpty().withMessage("Title is empty"),
-        body("mainspeakerid").isMongoId().withMessage("Main speaker Id should be object id")
+        body("MainSpeakerId").isMongoId().withMessage("Main speaker Id should be object id")
         .custom((value,{req}) => {
-            if(validator.isMongoId(req.body.mainspeakerid))
+            if(validator.isMongoId(req.body.MainSpeakerId))
             {
-                return Speaker.findOne({ _id : req.body.mainspeakerid })
+                return Speaker.findOne({ _id : req.body.MainSpeakerId })
                 .then((data)=>{
                     if(data==null)
                     {
@@ -153,15 +153,15 @@ router.route("/events")
                 throw new Error(" ");
             }
         }),
-        body("otherspeakers").isArray().withMessage("Other speaker should be array ")
+        body("OtherSpeakers").isArray().withMessage("Other speaker should be array ")
         .custom(async (value,{req}) => {
 
-            if(!(new Set(req.body.otherspeakers).size != req.body.otherspeakers.length)) //check that there is not duplicated date in array
+            if(!(new Set(req.body.OtherSpeakers).size != req.body.OtherSpeakers.length)) //check that there is not duplicated date in array
             {
-                for(var speakerid of req.body.otherspeakers)
+                for(var speakerid of req.body.OtherSpeakers)
                 {
                     //check if speaker id is object id and not equal main speaker id
-                    if(validator.isMongoId(speakerid) && (speakerid!==req.body.mainspeakerid))
+                    if(validator.isMongoId(speakerid) && (speakerid!==req.body.MainSpeakerId))
                     {
                         await Speaker.findOne({ _id : speakerid })
                         .then((data)=>{
@@ -186,13 +186,13 @@ router.route("/events")
                 throw new Error("There is duplicated speaker");
             }
         }),
-        body("otherspeakers.*").isMongoId().withMessage("Other Speakers Ids should be object IDs"),
-        body("students").isArray().withMessage("students should be array ")
+        body("OtherSpeakers.*").isMongoId().withMessage("Other Speakers Ids should be object IDs"),
+        body("Students").isArray().withMessage("students should be array ")
         .custom(async (value,{req}) => {
 
-            if(!(new Set(req.body.students).size != req.body.students.length)) //check that there is not duplicated date in array
+            if(!(new Set(req.body.Students).size != req.body.Students.length)) //check that there is not duplicated date in array
             {
-                for(var studentid of req.body.students)
+                for(var studentid of req.body.Students)
                 {
                     //check if student id is object id 
                     if(!isNaN(studentid))
@@ -222,15 +222,16 @@ router.route("/events")
         })
 
     ],controller.UpdateEvent)
-.delete(authMW,
+
+router.delete("/events/:_id",authMW,
     [
-        body("id").isNumeric().withMessage("ID should be number") 
+        param("_id").isNumeric().withMessage("ID should be number") 
     ],controller.DeleteEvent)
 
 
-router.get("/events/:id",authMW,
+router.get("/events/:_id",authMW,
 [
-    param("id").isNumeric().withMessage("ID should be number") 
+    param("_id").isNumeric().withMessage("ID should be number") 
 ]
 ,controller.GetEventById);
 

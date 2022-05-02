@@ -17,7 +17,7 @@ router.post("/login",controller.login);
 router.post("/registerstudent",[
     body("id").isNumeric().withMessage("ID should be Numeric only")
     .custom((value,{req}) => {
-        return Student.findOne({ _id : req.body.id })
+        return Student.findOne({ _id : req.body._id })
         .then((data)=>{
             if(data)
                 throw new Error("ID already in use");
@@ -28,7 +28,7 @@ router.post("/registerstudent",[
     .isEmail().withMessage("Email incorrect")
     // Custom validation,Validate email in use or not
     .custom((value,{req}) => {
-        return Student.findOne({ Email : req.body.email })
+        return Student.findOne({ email : req.body.email })
         .then((data)=>{
             if(data)
                 throw new Error("Email already in use");
@@ -42,7 +42,7 @@ router.post("/registerspeaker",[
             .isEmail().withMessage("Email incorrect")
             // Custom validation,Validate email in use or not
             .custom((value,{req}) => {
-                return Speaker.findOne({ Email : req.body.email })
+                return Speaker.findOne({ email : req.body.email })
                 .then((data)=>{
                     if(data)
                         throw new Error("Email already in use");

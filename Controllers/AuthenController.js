@@ -25,9 +25,9 @@ function checkValid(request){
     if (!result.isEmpty())
     {
         //prepare message of error
-        let message = result.array().reduce((current,error)=>current+error.msg+" "," ");
+        let msg = result.array().reduce((current,error)=>current+error.msg+" "," ");
         //create error 
-        let error = new Error(message);
+        let error = new Error(msg);
         //set status of validation error
         error.status = 422;
         //throw error
@@ -47,37 +47,40 @@ module.exports.login=async(request,response,next)=>{
             email:request.body.email,
             role:"admin"
         },"HagerMontaser5",{expiresIn:"24h"});
-        response.status(200).json({msg:"login successful",token});
+        response.status(200).json({msg:"admin",token});
     }
     else //student or speaker
     {
         try{
-            const speaker= await Speaker.findOne({Email:request.body.email});
+            const speaker= await Speaker.findOne({email:request.body.email});
+            console.log(speaker)
             if(!speaker)
             {
-                const student= await Student.findOne({Email:request.body.email});
+                const student= await Student.findOne({email:request.body.email});
                 if(!student)
                 {
-                    throw new Error("Login not successful");
+                    response.status(200).json({msg:"login not succesful",token});
+
+                    //throw new Error("Login not successful");
                 }
                 else
                 {
-                    bcrypt.compare(request.body.password, student.Password)
+                    bcrypt.compare(request.body.password, student.password)
                     .then(function (result) {
                         if(result)
                         {
                             token = jwt.sign({
                                 _id:student._id,
-                                email:student.Email,
+                                email:student.email,
                                 role:"student"
                             },"HagerMontaser5",{expiresIn:"24h"});
     
-                            response.status(200).json({msg:"login succesful",token});
+                            response.status(200).json({msg:"student",token});
     
                         }
                         else
                         {
-                            response.status(400).json({ message: "Login not succesful" })
+                            response.status(200).json({ msg: "Login not succesful" })
                         }
                     })
                     .catch(error=>next(error))
@@ -85,22 +88,22 @@ module.exports.login=async(request,response,next)=>{
             }
             else
             {
-                bcrypt.compare(request.body.password, speaker.Password)
+                bcrypt.compare(request.body.password, speaker.password)
                 .then(function (result) {
                     if(result)
                     {
                         token = jwt.sign({
                             _id:speaker._id,
-                            email:speaker.Email,
+                            email:speaker.email,
                             role:"speaker"
                         },"HagerMontaser5",{expiresIn:"24h"});
     
-                        response.status(200).json({msg:"login succesful",token});
+                        response.status(200).json({msg:"speaker",token});
     
                     }
                     else
                     {
-                        response.status(400).json({ message: "Login not succesful" })
+                        response.status(200).json({ msg: "Login not succesful" })
                     }
                 })
                 .catch(error=>next(error))
@@ -121,8 +124,8 @@ module.exports.registerstudent=(request,response,next)=>{
         //if data is valid create new student in database
         let student = new Student({
             _id: request.body.id,
-            Email:request.body.email,
-            Password:hash
+            email:request.body.email,
+            password:hash
         });
         //save in database
         student.save()
@@ -145,12 +148,12 @@ module.exports.registerspeaker=(request,response,next)=>{
         //if data is valid create new speaker in database
         let speaker = new Speaker({
             _id: mongoose.Types.ObjectId(),
-            Email:request.body.email,
-            UserName:request.body.username,
-            Password:hash,
-            City : request.body.city,
-            Street : request.body.street,
-            Building : request.body.building
+            email:request.body.email,
+            username:request.body.username,
+            password:hash,
+            city : request.body.city,
+            street : request.body.street,
+            building : request.body.building
         });
         //save in database
         speaker.save()

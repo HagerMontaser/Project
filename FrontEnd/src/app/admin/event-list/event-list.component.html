@@ -1,0 +1,43 @@
+<a (click)="addEvent()" class="btn btn-primary col-2">Add Event</a>
+
+<table class="table table-striped align-middle" >
+    <thead >
+        <tr>
+            <th>_id</th>
+            <th>Title</th>
+            <th>Event Date</th>
+            <th>Main Speaker</th>
+            <th>other Speakers</th>
+            <th>Students</th>
+            <th>Options</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of events">
+            <td>{{item._id}}</td>
+            <td>{{item.Title}}</td>
+            <td>{{item.EventDate|date:"YYYY/MM/dd"}}</td>
+            <td>{{item.MainSpeakerId}}</td>
+            <td>
+                <table class="table-striped align-middle">
+                    <tr *ngFor="let i of item.OtherSpeakers">
+                        <td >{{i}}</td> 
+                    </tr>
+                </table>
+            </td>
+            <td>
+                <table class="table-striped align-middle">
+                    <tr *ngFor="let i of item.Students">
+                        <td >{{i}}</td> 
+                    </tr>
+                </table>
+            </td>
+            <td>
+                <a (click)="detailsEvent(item._id)" class="btn btn-primary">Details</a>
+                <a (click)="editEvent(item._id)" class="btn btn-success">Edit</a>
+                <a (click)="deleteEvent(item._id)" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,11 @@
+<div id="menu2">
+    <hr>
+    <ul>
+      <li><a [routerLink]="['eventlist']" accesskey="1">Events</a></li>
+      <li><a [routerLink]="['studentlist']" accesskey="2">Students</a></li>
+      <li><a [routerLink]="['speakerlist']" accesskey="3">Speakers</a></li>
+      <li><a (click)="logout()" [routerLink]="" accesskey="4">Logout</a></li>
+      <!-- <li><a  accesskey="5">about</a></li> -->
+    </ul>
+</div>
+<router-outlet></router-outlet>

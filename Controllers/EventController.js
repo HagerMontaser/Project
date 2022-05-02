@@ -17,6 +17,7 @@ function checkValid(request){
     {
         //prepare message of error
         let message = result.array().reduce((current,error)=>current+error.msg+" "," ");
+  
         //create error 
         let error = new Error(message);
         //set status of validation error
@@ -29,14 +30,13 @@ function checkValid(request){
 
 //Get all events method
 module.exports.GetAllEvents = async(request,response,next)=>{
-   
     if(request.role === "admin")
     {
         checkValid(request);
         
         event.find({})
         .then((data)=>{
-            response.status(200).json({data});
+            response.status(200).json(data);
         })
         .catch((error) => {
             next(error);
@@ -84,10 +84,10 @@ module.exports.GetEventById = (request,response,next)=>{
         checkValid(request);
     
         //find Event when its id == id of request
-        event.find({_id:request.params.id})
+        event.findOne({_id:request.params._id})
         .then((data)=>{
             //send json data of choosen Event to front ent
-            response.status(200).json({data});
+            response.status(200).json(data);
         })
         .catch(error => {
             next(error);
@@ -115,24 +115,23 @@ module.exports.CreateEvent = (request,response,next)=>{
     {
         throw new Error("Not Authorized");
     }
-
+  
     //Check data valid or not
     checkValid(request);
-    
     //if data is valid create new Event in database
     let Event = new event({
-        _id: request.body.id,
-        Title:request.body.title,
-        EventDate:request.body.eventdate,
-        MainSpeakerId:request.body.mainspeakerid,
-        OtherSpeakers : request.body.otherspeakers,
-        Students : request.body.students
+        _id: request.body._id,
+        Title:request.body.Title,
+        EventDate:request.body.EventDate,
+        MainSpeakerId:request.body.MainSpeakerId,
+        OtherSpeakers : request.body.OtherSpeakers,
+        Students : request.body.Students
     });
-
+  
     //save in database
     Event.save()
     .then((data)=>{
-        response.status(201).json({message:"Event created",data})
+        response.status(201).json(data)
     })
     .catch(error=>next(error))
 }
@@ -148,13 +147,13 @@ module.exports.UpdateEvent = (request,response,next)=>{
     checkValid(request);
     
     //update Event by id
-    event.updateOne({_id:request.body.id},{
+    event.updateOne({_id:request.body._id},{
         $set:{
-            Title:request.body.title,
-            EventDate:request.body.eventdate,
-            // MainSpeakerId:request.body.mainspeakerid,
-            // OtherSpeakers : request.body.otherspeakers,
-            // Students : request.body.students
+            Title:request.body.Title,
+            EventDate:request.body.EventDate,
+            MainSpeakerId:request.body.MainSpeakerId,
+            OtherSpeakers : request.body.OtherSpeakers,
+            Students : request.body.Students
         }
     })
     .then(data => {
@@ -162,32 +161,31 @@ module.exports.UpdateEvent = (request,response,next)=>{
         if(data.matchedCount == 0)
             throw new Error("Event not exist");
         
-        response.status(200).json({message:"Event updated",data});
+        response.status(200).json({msg:"Event updated"});
     })
     .catch(error => next(error))
 }
 
 //Delete Event
 module.exports.DeleteEvent = (request,response,next)=>{
+    
     //Check data valid or not
     checkValid(request);
     
-     //check if user is an admin
-     if(request.role !== "admin")
-     {
-         throw new Error("Not Authorized");
-     }
-
-    
+    //check if user is an admin
+    if(request.role !== "admin")
+    {
+        throw new Error("Not Authorized");
+    }
 
     //delete Event
-    event.findOneAndDelete({_id:request.body.id})
+    event.findOneAndDelete({_id:request.params._id})
     .then(data => {
         if (data==null)
         {
             throw new Error("Event not exist");
         }
-        response.status(200).json({message :"Event deleted"});
+        response.status(200).json({msg :"Event deleted"});
     })
     .catch(error=>next(error))
 }

@@ -1,0 +1,42 @@
+
+<a class="btn btn-primary col-2" (click)="back()">Back</a>
+
+<form class="border ">
+    <div class="mb-3 col-5 offset-3">
+        <label for="ID" class="form-label">ID</label>
+        <input [(ngModel)]="event._id"  [ngModelOptions]="{standalone: true}" type="number" class="form-control" id="ID" >
+    </div>
+    <div class="mb-3 col-5 offset-3">
+      <label for="title" class="form-label">Title</label>
+      <input [(ngModel)]="event.Title"  [ngModelOptions]="{standalone: true}" type="text" class="form-control" id="title">
+    </div>
+    <div class="mb-3 col-5 offset-3">
+        <label for="date" class="form-label">EventDate</label>
+        <input [(ngModel)]="event.EventDate"  [ngModelOptions]="{standalone: true}" type="date" class="form-control" id="date" >
+    </div>
+    <div class="mb-3 col-5 offset-3">
+        <label for="mainid" class="form-label">MainSpeakerId</label>
+        <select id="mainid" class="form-select" >
+          <option *ngFor="let item of speakers" [value]="item._id">{{item.username}}</option>
+        </select>
+    </div>
+    <div class="mb-3 col-5 offset-3">
+        <label for="otherid" class="form-label">OtherSpeakers</label>
+        <select id="otherid" class="form-select" multiple="multiple">
+          <option *ngFor="let item of speakers" [value]="item._id">{{item.username}}</option>
+        </select>
+    </div>
+    <div class="mb-3 col-5 offset-3">
+        <label for="studid" class="form-label">Students</label>
+        <select id="studid" class="form-select" multiple="multiple">
+          <option *ngFor="let item of students" [value]="item._id">{{item.email}}</option>
+        </select>
+    </div>
+    <div class="mb-3 col-5 offset-3">
+        <span class="text-danger">{{span}}</span>
+    </div>
+    <button (click)="add()" class="btn btn-secondary mb-5 col-5 offset-3">Add</button>
+
+</form>
+
+

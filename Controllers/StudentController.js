@@ -34,7 +34,7 @@ module.exports.GetAllStudents = (request,response,next)=>{
 
     Student.find({})
     .then((data)=>{
-        response.status(200).json({data});
+        response.status(200).json(data);
     })
     .catch((error) => {
         next(error);
@@ -52,36 +52,16 @@ module.exports.GetStudentById = (request,response,next)=>{
     checkValid(request);
     
     //find student when its id == id of request
-    Student.find({_id:request.params.id})
+    Student.findOne({_id:request.params._id})
     .then((data)=>{
         //send json data of choosen student to front ent
-        response.status(200).json({data});
+        response.status(200).json(data);
     })
     .catch(error => {
         next(error);
     })
 }
 
-//create student
-// module.exports.CreateStudent = (request,response,next)=>{
-    
-//     //Check data valid or not
-//     checkValid(request);
-
-//     //if data is valid create new student in database
-//     let student = new Student({
-//         _id: request.body.id,
-//         Email:request.body.email,
-//         Password:request.body.password
-//     });
-
-//     //save in database
-//     student.save()
-//     .then((data)=>{
-//         response.status(201).json({message:"Student created",data})
-//     })
-//     .catch(error=>next(error))
-// }
 
 //Update Student
 module.exports.UpdateStudent = (request,response,next)=>{
@@ -93,9 +73,9 @@ module.exports.UpdateStudent = (request,response,next)=>{
     if(request.role === "admin")
     {
         //update student by id
-        Student.updateOne({_id:request.body.id},{
+        Student.updateOne({_id:request.body._id},{
             $set:{
-                Email:request.body.email
+                email:request.body.email
             }
         })
         .then(data => {
@@ -103,7 +83,7 @@ module.exports.UpdateStudent = (request,response,next)=>{
             if(data.matchedCount == 0)
                 throw new Error("Student not exist");
             
-            response.status(200).json({message:"Student updated",data});
+            response.status(200).json({msg:"Student updated"});
         })
         .catch(error => next(error))
     }
@@ -113,8 +93,8 @@ module.exports.UpdateStudent = (request,response,next)=>{
         //update student by id
         Student.updateOne({_id:request._id},{
             $set:{
-                Email:request.body.email,
-                Password:request.body.password
+                email:request.body.email,
+                password:request.body.password
             }
         })
         .then(data => {
@@ -122,7 +102,7 @@ module.exports.UpdateStudent = (request,response,next)=>{
             if(data.matchedCount == 0)
                 throw new Error("Student not exist");
             
-            response.status(200).json({message:"Student updated",data});
+            response.status(200).json({msg:"Student updated"});
         })
         .catch(error => next(error))
     }
@@ -144,13 +124,13 @@ module.exports.DeleteStudent = (request,response,next)=>{
         throw new Error("Not Authorized");
     }
     //delete student
-    Student.findOneAndDelete({_id:request.body.id})
+    Student.findOneAndDelete({_id:request.params._id})
     .then(data => {
         if (data ==null)
         {
             throw new Error("Student not exist");
         }
-        response.status(200).json({message :"student deleted"});
+        response.status(200).json({msg :"student deleted"});
 
     })
     .catch(error=>next(error))

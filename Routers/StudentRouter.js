@@ -22,61 +22,38 @@ const router = express.Router();
 //route of student - httpMethods
 router.route("/students")
 .get(authMW,controller.GetAllStudents)
-// .post(
-//     [
-//         body("id").isNumeric().withMessage("ID should be Numeric only")
-//         .custom((value,{req}) => {
-//             return Student.findOne({ _id : req.body.id })
-//             .then((data)=>{
-//                 if(data)
-//                     throw new Error("ID already in use");
-//             })
-//         }),
-//         body("email")
-//         // Checking if follow the email
-//         .isEmail().withMessage("Email incorrect")
-//         // Custom validation,Validate email in use or not
-//         .custom((value,{req}) => {
-//             return Student.findOne({ Email : req.body.email })
-//             .then((data)=>{
-//                 if(data)
-//                     throw new Error("Email already in use");
-//             })
-//         }),
-//         body("password").isAlphanumeric().withMessage("Password should be alphanumeric")
-        
-//     ],controller.CreateStudent)
 .put(authMW,
     [
-        body("id").isNumeric().withMessage("ID should be Numeric only"),
+        body("_id").isNumeric().withMessage("ID should be Numeric only"),
         body("email")
         // Checking if follow the email
         .isEmail().withMessage("Email incorrect")
         // Custom validation,Validate email in use or not
         .custom((value,{req}) => {
-            return Student.findOne({ Email : req.body.email })
+            return Student.findOne({ email : req.body.email })
             .then((data)=>{
                 if(data)
                 {
-                    if(data._id.toString() !==req.body.id.toString())
+                    if(data._id.toString() !==req.body._id.toString())
                     {
                         throw new Error("Email already in use");  
                     }
                 }
             })
         }),
-        body("password").isAlphanumeric().withMessage("Password should be alphanumeric")
+        body("password").isString().withMessage("Password should be alphanumeric")
     ],controller.UpdateStudent)
-.delete(authMW,
+
+router.delete("/students/:_id",authMW,
     [
-        body("id").isNumeric().withMessage("ID should be Numeric only")
+        param("_id").isNumeric().withMessage("ID should be Numeric only")
         
     ],controller.DeleteStudent)
 
 
-router.get("/students/:id",authMW,
+router.get("/students/:_id",authMW,
 [
-    param("id").isNumeric().withMessage("ID should be Numeric only")
+    param("_id").isNumeric().withMessage("ID should be Numeric only")
 ]
 ,controller.GetStudentById);
 

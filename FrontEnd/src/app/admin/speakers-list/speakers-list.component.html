@@ -1,0 +1,29 @@
+
+<table class="table table-striped align-middle" >
+    <thead >
+        <tr>
+            <th>_id</th>
+            <th>Email</th>
+            <th>UserName</th>
+            <th>Building</th>
+            <th>Street</th>
+            <th>City</th>
+            <th>Options</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of speakers">
+            <td>{{item._id}}</td>
+            <td>{{item.email}}</td>
+            <td>{{item.username}}</td>
+            <td>{{item.building}}</td>
+            <td>{{item.street}}</td>
+            <td>{{item.city}}</td>
+
+            <td>
+                <a (click)="editSpeaker(item._id)" class="btn btn-success">Edit</a>
+                <a (click)="deleteSpeaker(item._id)" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
