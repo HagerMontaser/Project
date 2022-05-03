@@ -34,7 +34,7 @@ router.post("/registerstudent",[
                 throw new Error("Email already in use");
         })
     }),
-    body("password").isAlphanumeric().withMessage("Password should be alphanumeric")
+    body("password").isString().withMessage("Password should be string")
 ],controller.registerstudent);
 router.post("/registerspeaker",[
     body("email")
@@ -48,8 +48,8 @@ router.post("/registerspeaker",[
                         throw new Error("Email already in use");
                 })
             }),
-            body("username").isAlpha().withMessage("UserName should be alphapetic characters only"),
-            body("password").isAlphanumeric().withMessage("Password should be alphanumeric"),
+            body("username").isString().withMessage("UserName should be string"),
+            body("password").isString().withMessage("Password should be string"),
             body("city").not().isEmpty().withMessage("City is empty"),
             body("street").not().isEmpty().withMessage("Street is empty"),
             body("building").not().isEmpty().withMessage("Building is empty")

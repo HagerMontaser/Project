@@ -47,7 +47,7 @@ module.exports.GetAllEvents = async(request,response,next)=>{
     {
         event.find({Students:request._id})
         .then((data)=>{
-            response.status(200).json({data});
+            response.status(200).json(data);
         })
         .catch((error) => {
             next(error);
@@ -59,13 +59,13 @@ module.exports.GetAllEvents = async(request,response,next)=>{
         .then((data)=>{
             if(data.length)
             {
-                response.status(200).json({data});
+                response.status(200).json(data);
             }
             else
             {
                 event.find({MainSpeakerId:request._id})
                 .then(data=>{
-                    response.status(200).json({data});
+                    response.status(200).json(data);
                 })
             }
         }).catch((error) => {next(error);})

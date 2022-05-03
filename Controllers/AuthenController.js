@@ -53,7 +53,6 @@ module.exports.login=async(request,response,next)=>{
     {
         try{
             const speaker= await Speaker.findOne({email:request.body.email});
-            console.log(speaker)
             if(!speaker)
             {
                 const student= await Student.findOne({email:request.body.email});
@@ -76,7 +75,6 @@ module.exports.login=async(request,response,next)=>{
                             },"HagerMontaser5",{expiresIn:"24h"});
     
                             response.status(200).json({msg:"student",token});
-    
                         }
                         else
                         {
@@ -130,7 +128,7 @@ module.exports.registerstudent=(request,response,next)=>{
         //save in database
         student.save()
         .then((data)=>{
-            response.status(201).json({message:"Student created",data})
+            response.status(201).json({msg:"Student created"})
         })
         .catch(error=>next(error))
     })
@@ -158,7 +156,7 @@ module.exports.registerspeaker=(request,response,next)=>{
         //save in database
         speaker.save()
         .then((data)=>{
-            response.status(201).json({message:"Speaker created",data})
+            response.status(201).json({msg:"Speaker created"})
         })
         .catch(error=>next(error))
     })

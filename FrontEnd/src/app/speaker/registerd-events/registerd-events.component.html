@@ -1,0 +1,18 @@
+<div class="alert alert-secondary fs-5 d-flex justify-content-center">Registered Events</div>
+<a class="btn btn-primary col-2" (click)="back()">Back</a>
+<table class="table table-striped align-middle" >
+    <thead >
+        <tr>
+            <th>_id</th>
+            <th>Title</th>
+            <th>Event Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of events">
+            <td>{{item._id}}</td>
+            <td>{{item.Title}}</td>
+            <td>{{item.EventDate|date:"YYYY/MM/dd"}}</td>
+        </tr>
+    </tbody>
+</table>

@@ -6,11 +6,16 @@
         <label for="ID" class="form-label alert alert-success col-12">ID : {{speaker._id}}</label>
     </div>
     <div class="mb-3 col-5 offset-3">
-        <label for="ID" class="form-label alert alert-success col-12">UserName : {{speaker.username}}</label>
-    </div>
+        <label for="title" class="form-label">UserName</label>
+        <input [(ngModel)]="speaker.username"  [ngModelOptions]="{standalone: true}" type="text" class="form-control" id="title">
+      </div>
     <div class="mb-3 col-5 offset-3">
       <label for="title" class="form-label">Email</label>
       <input [(ngModel)]="speaker.email"  [ngModelOptions]="{standalone: true}" type="text" class="form-control" id="title">
+    </div>
+    <div class="mb-3 col-5 offset-3">
+        <label for="title" class="form-label">Password</label>
+        <input [(ngModel)]="speaker.password"  [ngModelOptions]="{standalone: true}" type="text" class="form-control" id="title">
     </div>
     <div class="mb-3 col-5 offset-3">
        <label for="title" class="form-label">Building</label>

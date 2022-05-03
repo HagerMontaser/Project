@@ -1,8 +1,8 @@
 //require express-validator  
 const {validationResult}=require("express-validator");
 
-//require mongoose
-const mongoose = require("mongoose");
+//require bcrypt
+const bcrypt = require("bcryptjs")
 
 //require speaker model
 const Speaker = require("./../Models/SpeakerModel");
@@ -17,6 +17,8 @@ function checkValid(request){
     {
         //prepare message of error
         let message = result.array().reduce((current,error)=>current+error.msg+" "," ");
+        console.log(message)
+        
         //create error 
         let error = new Error(message);
         //set status of validation error
@@ -30,18 +32,31 @@ function checkValid(request){
 //Get all speakers method
 module.exports.GetAllSpeakers = (request,response,next)=>{
     //response.status(200).json({message :"speaker list"});
-    if(request.role !== "admin")
+    if(request.role === "admin")
+    {
+        Speaker.find({})
+        .then((data)=>{
+            response.status(200).json(data);
+        })
+        .catch((error) => {
+            next(error);
+        })
+    }
+    else if(request.role="speaker")
+    {
+        Speaker.findOne({_id:request._id})
+        .then((data)=>{
+            //send json data of choosen speaker to front ent
+            response.status(200).json(data);
+        })
+        .catch(error => {
+            next(error);
+        })
+    }
+    else
     {
         throw new Error("Not Authorized");
     }
-    
-    Speaker.find({})
-    .then((data)=>{
-        response.status(200).json(data);
-    })
-    .catch((error) => {
-        next(error);
-    })
 }
 
 //Get speaker by ID
@@ -68,32 +83,37 @@ module.exports.GetSpeakerById = (request,response,next)=>{
 //Update Speaker
 module.exports.UpdateSpeaker = (request,response,next)=>{
     //response.status(200).json({message :"speaker updated"});
-    
+
     //Check data valid or not
     checkValid(request);
     
-
     if(request.role === "speaker")
     {
+        console.log(request.body.password)
+
+        bcrypt.hash(request.body.password, 10).then(async (hash) =>{
         //update speaker by id
-        Speaker.updateOne({_id:request._id},{
-            $set:{
-                email:request.body.email,
-                username:request.body.username,
-                password:request.body.password,
-                city : request.body.city,
-                street : request.body.street,
-                building : request.body.building
-            }
+            Speaker.updateOne({_id:request._id},{
+                $set:{
+                    email:request.body.email,
+                    username:request.body.username,
+                    password:hash,
+                    city : request.body.city,
+                    street : request.body.street,
+                    building : request.body.building
+                }
+            })
+            .then(data => {
+                //if speaker is not found in database.
+                console.log(data.matchedCount)
+
+                if(data.matchedCount == 0)
+                    throw new Error("Speaker not exist");
+                
+                response.status(200).json({msg:"Speaker updated"});
+            })
+            .catch(error => next(error))
         })
-        .then(data => {
-            //if speaker is not found in database.
-            if(data.matchedCount == 0)
-                throw new Error("Speaker not exist");
-            
-            response.status(200).json({msg:"Speaker updated"});
-        })
-        .catch(error => next(error))
     }
     else if (request.role === "admin")
     {

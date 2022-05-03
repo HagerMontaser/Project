@@ -1,6 +1,9 @@
 //require express-validator  
 const {validationResult}=require("express-validator");
 
+//require bcrypt
+const bcrypt = require("bcryptjs")
+
 //require student model
 const Student = require("./../Models/StudentModel");
 
@@ -27,18 +30,32 @@ function checkValid(request){
 //Get all students method
 module.exports.GetAllStudents = (request,response,next)=>{
     
-    if(request.role !== "admin")
+    if(request.role === "admin")
+    {
+        Student.find({})
+        .then((data)=>{
+            response.status(200).json(data);
+        })
+        .catch((error) => {
+            next(error);
+        })
+    }
+    else if(request.role === "student")
+    {
+        Student.findOne({_id:request._id})
+        .then((data)=>{
+            //send json data of choosen speaker to front ent
+            response.status(200).json(data);
+        })
+        .catch(error => {
+            next(error);
+        })
+    }
+    else
     {
         throw new Error("Not Authorized");
     }
-
-    Student.find({})
-    .then((data)=>{
-        response.status(200).json(data);
-    })
-    .catch((error) => {
-        next(error);
-    })
+   
 }
 
 //Get student by ID
@@ -90,21 +107,23 @@ module.exports.UpdateStudent = (request,response,next)=>{
     //check if role is a student
     else if(request.role === "student")
     {
+        bcrypt.hash(request.body.password, 10).then(async (hash) =>{
         //update student by id
-        Student.updateOne({_id:request._id},{
-            $set:{
-                email:request.body.email,
-                password:request.body.password
-            }
+            Student.updateOne({_id:request._id},{
+                $set:{
+                    email:request.body.email,
+                    password:hash
+                }
+            })
+            .then(data => {
+                //if student is not found in database.
+                if(data.matchedCount == 0)
+                    throw new Error("Student not exist");
+                
+                response.status(200).json({msg:"Student updated"});
+            })
+            .catch(error => next(error))
         })
-        .then(data => {
-            //if student is not found in database.
-            if(data.matchedCount == 0)
-                throw new Error("Student not exist");
-            
-            response.status(200).json({msg:"Student updated"});
-        })
-        .catch(error => next(error))
     }
     else
     {

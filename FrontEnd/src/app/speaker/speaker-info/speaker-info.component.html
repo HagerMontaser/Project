@@ -1,0 +1,22 @@
+<div id="menu2">
+    <hr>
+    <ul>
+      <li><a (click)="logout()" [routerLink]="" accesskey="4">Logout</a></li>     
+    </ul>
+</div>
+
+<div class="mb-3 col-6 offset-3">
+    <a (click)="editSpeaker()" class="btn btn-success col-2 ">Edit</a> 
+    <a (click)="registerdEvents()" class="btn btn-success col-4 mx-2">Registered Events</a> <br>
+
+    <label for="ID" class="form-label alert alert-success col-12">
+        <u>ID :</u>  {{speaker._id}} <br>
+        <u>Username :</u>  {{speaker.username}} <br>
+        <u>Email :</u> {{speaker.email}} <br>
+        <!-- <u>Password :</u>  {{speaker.password}} <br> -->
+        <u>Building :</u>  {{speaker.building}} <br>
+        <u>Street :</u>  {{speaker.street}} <br>
+        <u>City :</u>  {{speaker.city}} <br>
+    </label>
+
+</div>
