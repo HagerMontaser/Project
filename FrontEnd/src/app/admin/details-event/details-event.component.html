@@ -1,19 +1,73 @@
 <div class="alert alert-secondary fs-5 d-flex justify-content-center">Details of Event</div>
 <a class="btn btn-primary col-2" (click)="back()">Back</a>
 
-<div class="mb-3 col-5 offset-3">
-    <label for="ID" class="form-label alert alert-success col-12">
+<div class="mb-3 col-10 offset-1">
+    <label for="ID" class="form-label alert alert-success col-12 text-black">
         <u>ID :</u>  {{event._id}} <br>
         <u>Title :</u>  {{event.Title}} <br>
         <u>Event Date :</u> {{event.EventDate}} <br>
-        <u>Main Speaker :</u>  {{mainspeaker.username}} <br>
-        <u>Other Speakers :</u> 
-        <tr *ngFor="let speaker of otherspeakers">
-            <td >{{speaker.username}} </td>
-        </tr> <br>
-        <u>Students :</u> 
-        <tr *ngFor="let student of students">
-            <td >{{student.email}} </td>
-        </tr>
+        <u>Main Speaker :</u> <br>
+        <table class="table table-striped align-middle" *ngIf="mainspeaker.username!=''">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>UserName</th>
+                    <th>Email</th>
+                    <th>Building</th>
+                    <th>Street</th>
+                    <th>City</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td >{{mainspeaker._id}} </td>
+                    <td >{{mainspeaker.username}} </td>
+                    <td >{{mainspeaker.email}} </td>
+                    <td >{{mainspeaker.building}} </td>
+                    <td >{{mainspeaker.street}} </td>
+                    <td >{{mainspeaker.city}} </td>
+                </tr>
+            </tbody>
+        </table>
+        <u>Other Speakers :</u> <br>
+        <table class="table table-striped align-middle" *ngIf="otherspeakers.length!=0" >
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>UserName</th>
+                    <th>Email</th>
+                    <th>Building</th>
+                    <th>Street</th>
+                    <th>City</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let speaker of otherspeakers">
+                    <td >{{speaker._id}} </td>
+                    <td >{{speaker.username}} </td>
+                    <td >{{speaker.email}} </td>
+                    <td >{{speaker.building}} </td>
+                    <td >{{speaker.street}} </td>
+                    <td >{{speaker.city}} </td>
+                </tr>
+            </tbody>
+        </table>
+         
+        <u>Students :</u> <br>
+        <table class="table table-striped align-middle" *ngIf="students.length!=0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let student of students">
+                    <td >{{student._id}} </td>
+                    <td >{{student.email}} </td>
+                </tr>
+            </tbody>
+        </table>
+        
     </label>
 </div>

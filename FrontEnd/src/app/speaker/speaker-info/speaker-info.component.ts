@@ -16,6 +16,7 @@ export class SpeakerInfoComponent implements OnInit,OnDestroy {
   sub:Subscription|null=null;
 
   ngOnInit(): void {
+    localStorage.removeItem("token");
     this.sub=this.speakerSer.getSpeakerProfile().subscribe(
       a=>{
         this.speaker=a;

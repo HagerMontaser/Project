@@ -21,6 +21,7 @@ const Student = require("./../Models/StudentModel");
 //create router object
 const router = express.Router();
 
+let MainSpeakersId = [];
 let OtherSpeakersIds = [];
 let StudentsIds = [];
 
@@ -40,25 +41,8 @@ router.route("/events")
         }),
         body("Title").isString().withMessage("Title should be string")
         .not().isEmpty().withMessage("Title is empty"),
-        body("MainSpeakerId").isMongoId().withMessage("Main speaker Id should be object id")
-        .custom((value,{req}) => {
-            if(validator.isMongoId(req.body.MainSpeakerId))
-            {
-                return Speaker.findOne({ _id : req.body.MainSpeakerId })
-                .then((data)=>{
-                    if(data==null)
-                    {
-                        throw new Error("Speaker Id is not found");
-                    }
-                })
-            }
-            else{
-                throw new Error(" ");
-            }
-        }),
         body("OtherSpeakers").isArray().withMessage("Other speaker should be array ")
         .custom(async (value,{req}) => {
-
             if(!(new Set(req.body.OtherSpeakers).size != req.body.OtherSpeakers.length)) //check that there is not duplicated date in array
             {
                 for(var speakerid of req.body.OtherSpeakers)
@@ -137,21 +121,22 @@ router.route("/events")
         }),
         body("Title").isString().withMessage("Title should be string")
         .not().isEmpty().withMessage("Title is empty"),
-        body("MainSpeakerId").isMongoId().withMessage("Main speaker Id should be object id")
+        body("MainSpeakerId")
         .custom((value,{req}) => {
-            if(validator.isMongoId(req.body.MainSpeakerId))
+            if(req.body.MainSpeakerId[0]!=undefined)
             {
-                return Speaker.findOne({ _id : req.body.MainSpeakerId })
-                .then((data)=>{
-                    if(data==null)
-                    {
-                        throw new Error("Speaker Id is not found");
+                for(var speakerid of req.body.OtherSpeakers)
+                {
+                    if(speakerid!==req.body.MainSpeakerId[0]){
+                        MainSpeakersId[0]=req.body.MainSpeakerId;
                     }
-                })
+                    else
+                    {
+                        throw new Error("Speaker Id invalid");
+                    }
+                }
             }
-            else{
-                throw new Error(" ");
-            }
+            return MainSpeakersId;
         }),
         body("OtherSpeakers").isArray().withMessage("Other speaker should be array ")
         .custom(async (value,{req}) => {

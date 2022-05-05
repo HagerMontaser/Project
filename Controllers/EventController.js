@@ -3,8 +3,6 @@ const {validationResult}=require("express-validator");
 
 //require Event model
 const event = require("../Models/EventModel");
-const student = require("../Models/StudentModel");
-const speaker = require("../Models/SpeakerModel");
 
 
 
@@ -17,7 +15,6 @@ function checkValid(request){
     {
         //prepare message of error
         let message = result.array().reduce((current,error)=>current+error.msg+" "," ");
-  
         //create error 
         let error = new Error(message);
         //set status of validation error
@@ -118,6 +115,7 @@ module.exports.CreateEvent = (request,response,next)=>{
   
     //Check data valid or not
     checkValid(request);
+
     //if data is valid create new Event in database
     let Event = new event({
         _id: request.body._id,
@@ -127,7 +125,7 @@ module.exports.CreateEvent = (request,response,next)=>{
         OtherSpeakers : request.body.OtherSpeakers,
         Students : request.body.Students
     });
-  
+
     //save in database
     Event.save()
     .then((data)=>{

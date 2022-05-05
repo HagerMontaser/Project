@@ -20,7 +20,6 @@ const Speaker = require("./../Models/SpeakerModel");
 function checkValid(request){
     //validate the request
     let result = validationResult(request);
-    console.log(result);
     //check result if not empty , there are errors
     if (!result.isEmpty())
     {

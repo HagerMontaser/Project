@@ -7,6 +7,8 @@ const bcrypt = require("bcryptjs")
 //require speaker model
 const Speaker = require("./../Models/SpeakerModel");
 
+//require speaker model
+const Event = require("./../Models/EventModel");
 
 //Method --> Check data is valid or not
 function checkValid(request){
@@ -160,7 +162,69 @@ module.exports.DeleteSpeaker = (request,response,next)=>{
         {
             throw new Error("Speaker not exist");
         }
+        // Event.updateMany({MainSpeakerId:request.params._id},{
+        //     $set:{
+        //         MainSpeakerId:null
+        //     }
+        // })
+        
+        // Event.find({OtherSpeakers:request.params._id})
+        // .then(
+        //     events=>{
+        //         console.log(events);
+        //         if(events){
+        //             for(var i=0;i<events.length;i++){
+        //                 console.log(events[i]);
+        //                 console.log(events[i].OtherSpeakers)
+        //                 console.log(typeof(events[i].OtherSpeakers))
+
+        //                 index= events[i].OtherSpeakers.indexOf(request.params._id);
+                        
+        //                 events[i].OtherSpeakers.splice(index,1);
+        //             console.log(events[i]);
+
+        //                 Event.updateOne({_id:events[i]._id},{
+        //                 $set:{
+        //                     OtherSpeakers : events[i].OtherSpeakers
+        //                 }
+        //                 })
+        //             }
+        //         }
+        //     }
+        // )
+        RefreshEvent(request.params._id);
         response.status(200).json({msg :"speaker deleted"});
     })
     .catch(error=>next(error))
+}
+
+//refresh event
+function RefreshEvent(id){
+    Event.find({MainSpeakerId:id})
+    .then(data=>{
+            if(data!=null){
+                Event.updateMany({MainSpeakerId:id},{
+                    $pull:{
+                        MainSpeakerId:id
+                    }
+                }).then(data=>{
+                       //console.log(data);
+                })
+            }
+        }
+    )
+    Event.find({OtherSpeakers:id})
+    .then(events=>{
+            if(events!=null){
+                Event.updateMany({OtherSpeakers:id},{
+                    $pull:{
+                        OtherSpeakers:id
+                    }
+                }).then(data=>{
+                        //console.log(data);
+                })
+            }
+        }
+    )
+
 }

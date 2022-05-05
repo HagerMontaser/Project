@@ -12,7 +12,7 @@ import { AdminService } from '../admin.service';
   styleUrls: ['./edit-event.component.css']
 })
 export class EditEventComponent implements OnInit {
-  updatedEvent:Event=new Event(0,"","",Object(),[Object()],[]);
+  updatedEvent:Event=new Event(0,"","",[Object()],[Object()],[]);
   span:string="";
   speakers:Speaker[]=[];
   students:Student[]=[];
@@ -70,11 +70,14 @@ export class EditEventComponent implements OnInit {
   }
   edit(){
 
-    var Mainid = (document.getElementById("mainid"))as HTMLSelectElement;
     //main speaker
-    Mainid.value=this.updatedEvent.MainSpeakerId.toString();
-    let selectedMainSpeaker:any;
-    selectedMainSpeaker= Mainid.selectedOptions[0].value;
+    var Mainid = (document.getElementById("mainid"))as HTMLSelectElement;
+    let selectedMainSpeaker:any[]=[];
+    if(Mainid.selectedOptions[0].value!='')
+    {
+      selectedMainSpeaker[0]= Mainid.selectedOptions[0].value;
+    }
+    this.updatedEvent.MainSpeakerId=selectedMainSpeaker;
 
     //other speakers
     var Otherid = (document.getElementById("otherid"))as HTMLSelectElement;
@@ -102,6 +105,10 @@ export class EditEventComponent implements OnInit {
         {
           this.span="check inputs";
         }
+      }
+      ,
+      error=>{
+        this.span="Check Inputs";
       }
     )
   }

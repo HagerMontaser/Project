@@ -19,32 +19,39 @@ export class DetailsEventComponent implements OnInit {
   constructor(public adminSer:AdminService,public router:Router,public ac:ActivatedRoute) { }
 
   ngOnInit(): void {
+
     this.ac.params.subscribe(a=>{
       this.adminSer.getEventById(a['_id']).subscribe(
         data=>{
           this.event=data;
-        this.adminSer.getSpeakerById(this.event.MainSpeakerId).subscribe(
-          ms=>{
-            this.mainspeaker=ms;
-        })
-        for(var i=0;i<this.event.OtherSpeakers.length;i++)
-        {
-          this.adminSer.getSpeakerById(this.event.OtherSpeakers[i]).subscribe(
-            os=>{
-              this.otherspeakers.push(os);
-          })
-        }
-        for(var i=0;i<this.event.Students.length;i++)
-        {
-          this.adminSer.getStudentById(this.event.Students[i]).subscribe(
-            os=>{
-              this.students.push(os);
-          })
-        }
+          
+          if(this.event.MainSpeakerId[0] != null)
+          {
+            this.adminSer.getSpeakerById(this.event.MainSpeakerId[0]).subscribe(
+              ms=>{
+                this.mainspeaker=ms;
+            })
+          }
+          
+          for(var i=0;i<this.event.OtherSpeakers.length;i++)
+          {
+            if(this.event.OtherSpeakers[i]!=null)
+            {
+              this.adminSer.getSpeakerById(this.event.OtherSpeakers[i]).subscribe(
+                os=>{
+                  this.otherspeakers.push(os);
+              })
+            }
+          }
+          for(var i=0;i<this.event.Students.length;i++)
+          {
+            this.adminSer.getStudentById(this.event.Students[i]).subscribe(
+              os=>{
+                this.students.push(os);
+            })
+          }
       })
     })
-
-      
   }
 
   //back to list

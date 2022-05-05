@@ -16,6 +16,7 @@
     <div class="mb-3 col-5 offset-3">
         <label for="mainid" class="form-label">MainSpeaker</label>
         <select id="mainid" class="form-select" >
+          <option></option>
           <option *ngFor="let item of speakers" [value]="item._id">{{item.username}}</option>
         </select>
     </div>

@@ -7,6 +7,8 @@ const bcrypt = require("bcryptjs")
 //require student model
 const Student = require("./../Models/StudentModel");
 
+//require speaker model
+const Event = require("./../Models/EventModel");
 
 //Method --> Check data is valid or not
 function checkValid(request){
@@ -149,8 +151,28 @@ module.exports.DeleteStudent = (request,response,next)=>{
         {
             throw new Error("Student not exist");
         }
+        RefreshEvent(request.params._id);
         response.status(200).json({msg :"student deleted"});
 
     })
     .catch(error=>next(error))
+}
+
+//refresh event
+function RefreshEvent(id){
+    
+    Event.find({Students:id})
+    .then(events=>{
+            if(events!=null){
+                Event.updateMany({Students:id},{
+                    $pull:{
+                        Students:id
+                    }
+                }).then(data=>{
+                        //console.log(data);
+                })
+            }
+        }
+    )
+
 }
