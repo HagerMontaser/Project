@@ -1,0 +1,18 @@
+<div id="menu2">
+    <hr>
+    <ul>
+      <li><a (click)="logout()" [routerLink]="" accesskey="4">Logout</a></li>     
+    </ul>
+</div>
+
+<div class="mb-3 col-6 offset-3">
+    <a (click)="editStudent()" class="btn btn-success col-2 ">Edit</a> 
+    <a (click)="registerdEvents()" class="btn btn-success col-4 mx-2">Registered Events</a> <br>
+
+    <label for="ID" class="form-label alert alert-success col-12">
+        <u>ID :</u>  {{student._id}} <br>
+        <u>Email :</u> {{student.email}} <br>
+        <!-- <u>Password :</u>  {{speaker.password}} <br> -->
+    </label>
+
+</div>

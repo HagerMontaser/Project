@@ -4,9 +4,10 @@ import { CanActivate, Router } from "@angular/router";
 @Injectable({
     providedIn: 'root'
   })
-export class SpeakerLoginGuard implements CanActivate{
+export class StudentLoginGuard implements CanActivate{
     constructor(public router:Router)
     {
+
     }
    
     canActivate() {
@@ -14,7 +15,7 @@ export class SpeakerLoginGuard implements CanActivate{
         {
             return true;
         }
-        this.router.navigateByUrl("speaker/header/login");
+        this.router.navigateByUrl("student/header/login");
         return false;
     }
     

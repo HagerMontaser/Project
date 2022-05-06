@@ -15,7 +15,7 @@ const controller=require("./../Controllers/AuthenController")
 
 router.post("/login",controller.login);
 router.post("/registerstudent",[
-    body("id").isNumeric().withMessage("ID should be Numeric only")
+    body("_id").isNumeric().withMessage("ID should be Numeric only")
     .custom((value,{req}) => {
         return Student.findOne({ _id : req.body._id })
         .then((data)=>{

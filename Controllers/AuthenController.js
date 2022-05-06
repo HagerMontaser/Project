@@ -114,13 +114,14 @@ module.exports.login=async(request,response,next)=>{
 
 //register_student
 module.exports.registerstudent=(request,response,next)=>{
+    
     //Check data valid or not
     checkValid(request);
-
+    
     bcrypt.hash(request.body.password, 10).then(async (hash) =>{
         //if data is valid create new student in database
         let student = new Student({
-            _id: request.body.id,
+            _id: request.body._id,
             email:request.body.email,
             password:hash
         });

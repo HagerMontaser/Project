@@ -83,7 +83,7 @@ module.exports.GetSpeakerById = (request,response,next)=>{
 }
 
 //Update Speaker
-module.exports.UpdateSpeaker = (request,response,next)=>{
+module.exports.UpdateSpeaker = async(request,response,next)=>{
     //response.status(200).json({message :"speaker updated"});
 
     //Check data valid or not
@@ -91,15 +91,14 @@ module.exports.UpdateSpeaker = (request,response,next)=>{
     
     if(request.role === "speaker")
     {
-        console.log(request.body.password)
-
-        bcrypt.hash(request.body.password, 10).then(async (hash) =>{
-        //update speaker by id
+        const speaker= await Speaker.findOne({_id:request.body._id});
+        if(request.body.password===speaker.password)
+        {
+            //update speaker by id
             Speaker.updateOne({_id:request._id},{
                 $set:{
                     email:request.body.email,
                     username:request.body.username,
-                    password:hash,
                     city : request.body.city,
                     street : request.body.street,
                     building : request.body.building
@@ -107,15 +106,41 @@ module.exports.UpdateSpeaker = (request,response,next)=>{
             })
             .then(data => {
                 //if speaker is not found in database.
-                console.log(data.matchedCount)
 
                 if(data.matchedCount == 0)
                     throw new Error("Speaker not exist");
-                
+
                 response.status(200).json({msg:"Speaker updated"});
             })
             .catch(error => next(error))
-        })
+        }
+        else
+        {
+            bcrypt.hash(request.body.password, 10).then(async (hash) =>{
+                //update speaker by id
+                    Speaker.updateOne({_id:request._id},{
+                        $set:{
+                            email:request.body.email,
+                            username:request.body.username,
+                            password:hash,
+                            city : request.body.city,
+                            street : request.body.street,
+                            building : request.body.building
+                        }
+                    })
+                    .then(data => {
+                        //if speaker is not found in database.
+                    
+                        if(data.matchedCount == 0)
+                            throw new Error("Speaker not exist");
+
+                        response.status(200).json({msg:"Speaker updated"});
+                    })
+                    .catch(error => next(error))
+                })
+        }
+
+        
     }
     else if (request.role === "admin")
     {

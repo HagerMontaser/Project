@@ -83,7 +83,7 @@ module.exports.GetStudentById = (request,response,next)=>{
 
 
 //Update Student
-module.exports.UpdateStudent = (request,response,next)=>{
+module.exports.UpdateStudent = async(request,response,next)=>{
 
     //Check data valid or not
     checkValid(request);
@@ -109,12 +109,13 @@ module.exports.UpdateStudent = (request,response,next)=>{
     //check if role is a student
     else if(request.role === "student")
     {
-        bcrypt.hash(request.body.password, 10).then(async (hash) =>{
-        //update student by id
-            Student.updateOne({_id:request._id},{
+        const student= await Student.findOne({_id:request.body._id});
+        if(request.body.password === student.password)
+        {
+             //update student by id
+             Student.updateOne({_id:request._id},{
                 $set:{
-                    email:request.body.email,
-                    password:hash
+                    email:request.body.email
                 }
             })
             .then(data => {
@@ -125,7 +126,27 @@ module.exports.UpdateStudent = (request,response,next)=>{
                 response.status(200).json({msg:"Student updated"});
             })
             .catch(error => next(error))
-        })
+        }
+        else
+        {
+            bcrypt.hash(request.body.password, 10).then(async (hash) =>{
+                //update student by id
+                Student.updateOne({_id:request._id},{
+                    $set:{
+                        email:request.body.email,
+                        password:hash
+                    }
+                })
+                .then(data => {
+                    //if student is not found in database.
+                    if(data.matchedCount == 0)
+                        throw new Error("Student not exist");
+                    
+                    response.status(200).json({msg:"Student updated"});
+                })
+                .catch(error => next(error))
+            })
+        }
     }
     else
     {
